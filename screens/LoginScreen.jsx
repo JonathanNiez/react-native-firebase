@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 import styles from "../styles/styles";
 
 export default function LoginScreen() {
@@ -14,14 +15,15 @@ export default function LoginScreen() {
   async function handleLogin() {
     if (!email || !password) {
       alert("Please enter email and password");
-    } else {
-      try {
-        // await signInWithEmailAndPassword();
-        alert("Login successful");
-        navigation.navigate("Home");
-      } catch (error) {
-        alert("Login failed: " + error.message);
-      }
+      return;
+    }
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Login successful");
+      navigation.navigate("Home");
+    } catch (error) {
+      alert("Login failed: " + error.message);
     }
   }
 
@@ -46,7 +48,10 @@ export default function LoginScreen() {
 
       <View style={{ flexDirection: "row", gap: 3, marginTop: 20 }}>
         <Text>Don't have an account?</Text>
-        <Text style={styles.link} onPress={() => navigation.navigate("Register")}>
+        <Text
+          style={styles.link}
+          onPress={() => navigation.navigate("Register")}
+        >
           Register
         </Text>
       </View>

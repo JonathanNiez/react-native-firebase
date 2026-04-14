@@ -26,6 +26,10 @@ const styles = StyleSheet.create({
     color: "blue",
     textDecorationLine: "underline",
   },
+  welcomeText: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
 });
 
 export default styles;

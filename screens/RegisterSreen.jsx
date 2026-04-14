@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import {  Text, TextInput, View, Button } from "react-native";
+import { Text, TextInput, View, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
 import styles from "../styles/styles";
 
 export default function RegisterScreen() {
@@ -15,19 +16,22 @@ export default function RegisterScreen() {
   async function handleRegister() {
     if (!email || !password || !confirmPassword) {
       alert("Please fill in all fields");
-    } else if (password !== confirmPassword) {
+      return;
+    }
+    if (password !== confirmPassword) {
       alert("Passwords do not match");
-    } else if (password.length < 6) {
+      return;
+    }
+    if (password.length < 6) {
       alert("Password should be at least 6 characters");
-    } else {
-      try {
-        // await createUserWithEmailAndPassword();
-
-        alert("Registration successful");
-        navigation.navigate("Login");
-      } catch (error) {
-        alert("Registration failed: " + error.message);
-      }
+      return;
+    }
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+      alert("Registration successful");
+      navigation.navigate("Login");
+    } catch (error) {
+      alert("Registration failed: " + error.message);
     }
   }
   return (
