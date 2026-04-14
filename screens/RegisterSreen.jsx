@@ -1,8 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
-import { StyleSheet, Text, TextInput, View, Button } from "react-native";
+import {  Text, TextInput, View, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import styles from "../styles/styles";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -64,31 +65,3 @@ export default function RegisterScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  inputBox: {
-    width: "80%",
-    fontSize: 16,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    height: 40,
-    borderColor: "#5f5f5f",
-    borderWidth: 1,
-    borderRadius: 10,
-  },
-  link: {
-    color: "blue",
-    textDecorationLine: "underline",
-  },
-});
