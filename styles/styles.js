@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   inputBox: {
-    width: "80%",
+    width: "70%",
     fontSize: 16,
     marginBottom: 15,
     paddingHorizontal: 10,
@@ -29,6 +29,21 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: "bold",
+  },
+  btn: {
+    backgroundColor: "#007bff",
+    borderRadius: 12,
+    paddingVertical: 5,
+  },
+  btnLabel: {
+    fontSize: 14,
+    fontWeight: "bold",
+    letterSpacing: 1,
+  },
+  logoutBtn: {
+    position: "absolute",
+    top: 10,
+    right: 10,
   },
 });
 

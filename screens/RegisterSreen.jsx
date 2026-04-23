@@ -1,10 +1,14 @@
 import { useNavigation } from "@react-navigation/native";
-import { useState } from "react";
-import { Text, TextInput, View, Button } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { FirebaseError } from "firebase/app";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { Text, View } from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { auth } from "../firebase/firebaseConfig";
 import styles from "../styles/styles";
+import CustomLink from "../components/CustomLink";
+import CustomButton from "../components/CustomButton";
 
 export default function RegisterScreen() {
   const navigation = useNavigation();
@@ -12,6 +16,9 @@ export default function RegisterScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleRegister() {
     if (!email || !password || !confirmPassword) {
@@ -31,7 +38,41 @@ export default function RegisterScreen() {
       alert("Registration successful");
       navigation.navigate("Login");
     } catch (error) {
-      alert("Registration failed: " + error.message);
+      if (error instanceof FirebaseError) {
+        switch (error.code) {
+          case "auth/invalid-email":
+            alert("The email address is not valid.");
+            break;
+          case "auth/user-not-found":
+            alert("No account found with this email.");
+            break;
+          case "auth/wrong-password":
+            alert("Incorrect password. Please try again.");
+            break;
+          case "auth/invalid-credential":
+            alert("Invalid email or password.");
+            break;
+          case "auth/user-disabled":
+            alert("This account has been disabled.");
+            break;
+          case "auth/too-many-requests":
+            alert("Too many failed attempts. Please try again later.");
+            break;
+          case "auth/network-request-failed":
+            alert("Network error. Please check your connection.");
+            break;
+          default:
+            alert("Login failed. Please try again.");
+            console.error(
+              "Unhandled Firebase error:",
+              error.code,
+              error.message,
+            );
+        }
+      } else {
+        alert("An unexpected error occurred.");
+        console.error("Non-Firebase error:", error);
+      }
     }
   }
   return (
@@ -49,7 +90,14 @@ export default function RegisterScreen() {
         style={styles.inputBox}
         value={password}
         onChangeText={setPassword}
-        secureTextEntry
+        secureTextEntry={!showPassword}
+         right={
+          <TextInput.Icon
+            icon={showPassword ? "eye-off" : "eye"}
+            onPress={() => setShowPassword(!showPassword)}
+          />
+        }
+        
       />
       <TextInput
         placeholder="Confirm Password"
@@ -57,15 +105,21 @@ export default function RegisterScreen() {
         value={confirmPassword}
         onChangeText={setConfirmPassword}
         secureTextEntry
+        right={
+          <TextInput.Icon
+            icon={showConfirmPassword ? "eye-off" : "eye"}
+            onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+          />
+        }
       />
-      <Button title="Register" onPress={handleRegister} />
 
-      <View style={{ flexDirection: "row", gap: 3, marginTop: 20 }}>
-        <Text>Already have an account?</Text>
-        <Text style={styles.link} onPress={() => navigation.goBack()}>
-          Login
-        </Text>
-      </View>
+      <CustomButton title="Register" onPress={handleRegister} />
+
+      <CustomLink
+        label="Already have an account?"
+        linkText="Login"
+        to="Login"
+      />
     </SafeAreaView>
   );
 }
